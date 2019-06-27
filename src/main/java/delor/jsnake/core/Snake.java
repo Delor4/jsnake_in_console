@@ -51,6 +51,12 @@ public class Snake {
 		return false;
 	}
 
+	public void Move() {
+		Move(parts.get(0).dir);
+	}
+	public void setDir(Dir dir) {
+		parts.get(0).dir = dir;
+	}
 	public void Move(Dir dir) {
 
 		ListIterator<SnakePart> ri = parts.listIterator(parts.size());

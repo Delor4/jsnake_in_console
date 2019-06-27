@@ -40,7 +40,7 @@ public class Snake extends delor.jsnake.core.Snake {
 		return badEating(screenSize.getColumns(), screenSize.getRows());
 	}
 
-	void Show(Terminal terminal) throws IOException {
+	public void Show(Terminal terminal) throws IOException {
 
 		TerminalSize screenSize = terminal.getTerminalSize();
 		int screenX = screenSize.getColumns();

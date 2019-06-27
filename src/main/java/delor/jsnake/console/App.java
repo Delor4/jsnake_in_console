@@ -44,9 +44,10 @@ public class App {
 			}
 			terminal.clearScreen();
 			snake.Show(terminal);
-			if(snake.badEating(terminal)) {
+			if (snake.badEating(terminal)) {
 				printxy(terminal, 0, 0, "Eat self!");
-			};
+			}
+			;
 			terminal.flush();
 			key = terminal.readInput();
 			i++;
@@ -60,20 +61,28 @@ public class App {
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-
+	public static void runTerminal() throws IOException {
 		// Setup terminal and screen layers
 		Terminal terminal = new DefaultTerminalFactory().createTerminal();
-		
+
 		// greetings
 		printxy(terminal, 10, 5, "Hello snake!");
 
 		TerminalSize screenSize = terminal.getTerminalSize();
+		
 		Snake snake = new Snake(screenSize.getColumns() / 2, screenSize.getRows() / 2);
+		
+		Game game = new Game(snake, terminal);
+		
+		game.startGame();
 
-		mainLoop(terminal, snake);
+		//mainLoop(terminal, snake);
 
 		// cleaning
 		terminal.close();
+	}
+
+	public static void main(String[] args) throws IOException {
+		runTerminal();
 	}
 }
