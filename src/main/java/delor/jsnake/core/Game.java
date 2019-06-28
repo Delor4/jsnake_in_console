@@ -7,8 +7,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 
-import delor.jsnake.console.Apple;
-
 public abstract class Game {
 	protected final Snake snake;
 	protected Apple apple;
@@ -46,27 +44,34 @@ public abstract class Game {
 			return null;
 		}
 	}
+
 	protected class MsgEatingApple implements Msg {
+		public MsgEatingApple(Apple apple) {
+			this.apple = apple;
+		}
+
+		Apple apple;
+
 		@Override
 		public int getID() {
 			return 3;
 		}
 
 		@Override
-		public Object getData() {
-			return null;
+		public Apple getData() {
+			return apple;
 		}
 	}
 
 	protected Boolean DispatchMsg(Msg m) throws InterruptedException {
 		switch (m.getID()) {
-		case 1://redraw
+		case 1:// redraw
 			ReDrawGameField();
 			break;
-		case 3://eating apple
-			eatApple();
+		case 3:// eating apple
+			eatApple((Apple) m.getData());
 			break;
-		case 10://Oops
+		case 10:// Oops
 			showBadEating();
 			return false;
 		}
@@ -87,14 +92,15 @@ public abstract class Game {
 
 	private static final Random random = new Random();
 
-	protected void eatApple() throws InterruptedException {
+	protected void eatApple(delor.jsnake.core.Apple a) throws InterruptedException {
 		snakeAccessSemaphore.acquire();
-		snake.AddNewPart();
+		snake.AddNewPart(a);
 		snakeAccessSemaphore.release();
 		apple = null;
 		makeNewApple();
 		addMsg(new MsgRefresh());
 	}
+
 	protected void makeNewApple() throws InterruptedException {
 		snakeAccessSemaphore.acquire();
 		int x = snake.column;
@@ -144,7 +150,7 @@ public abstract class Game {
 					if (snake.badEating()) {
 						addMsg(new MsgEatingBad());
 					} else if (snake.appleEating(apple.x, apple.y)) {
-						addMsg(new MsgEatingApple());
+						addMsg(new MsgEatingApple(apple));
 					}
 					tick++;
 					snakeAccessSemaphore.release();
@@ -155,7 +161,7 @@ public abstract class Game {
 		};
 		snakeTimer = new Timer("SnakeTimer");
 
-		long delay = 500L;
+		long delay = 300L;
 
 		snakeTimer.schedule(task, delay, delay);
 

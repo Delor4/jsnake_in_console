@@ -34,6 +34,10 @@ public class Snake {
 		return this.parts.add(p);
 	}
 
+	protected boolean AddNewPart(Apple a) {
+		return AddNewPart();
+	}
+
 	protected boolean AddNewPart() {
 		return AddNewPart(new SnakePart(column, row));
 	}

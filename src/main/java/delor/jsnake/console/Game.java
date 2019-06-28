@@ -60,7 +60,7 @@ public class Game extends delor.jsnake.core.Game {
 	}
 
 	protected Apple createApple(int x, int y) {
-		return new Apple(x, y);
+		return new Apple(x, y, delor.jsnake.console.Snake.randomColor());
 	}
 
 	private void mainLoop() throws InterruptedException {
@@ -134,8 +134,8 @@ public class Game extends delor.jsnake.core.Game {
 		if (apple != null) {
 			try {
 				terminal.setCursorPosition(apple.x, apple.y);
-				terminal.setForegroundColor(apple.fgColor);
-				terminal.putCharacter(apple.apperance);
+				terminal.setForegroundColor(((delor.jsnake.console.Apple) apple).fgColor);
+				terminal.putCharacter(((delor.jsnake.console.Apple) apple).apperance);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -161,7 +161,6 @@ public class Game extends delor.jsnake.core.Game {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Painting game field.");
 	}
 
 	@Override

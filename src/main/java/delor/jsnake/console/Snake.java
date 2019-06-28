@@ -8,6 +8,8 @@ import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.terminal.Terminal;
 
+import delor.jsnake.core.Apple;
+
 public class Snake extends delor.jsnake.core.Snake {
 
 	Terminal terminal;
@@ -42,7 +44,9 @@ public class Snake extends delor.jsnake.core.Snake {
 	public boolean AddNewPart(TextColor color) {
 		return AddNewPart(new SnakePart(column, row, color));
 	}
-
+	protected boolean AddNewPart(Apple a) {
+		return AddNewPart(((delor.jsnake.console.Apple)a).fgColor);
+	}
 	protected boolean badEating() {
 		if (super.badEating()) {
 			return true;
