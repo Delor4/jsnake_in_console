@@ -7,6 +7,8 @@ import java.util.ListIterator;
 
 public class Snake {
 
+	final int initialSnakeParts = 2;
+
 	public enum Dir {
 		NORTH, WEST, SOUTH, EAST
 	}
@@ -19,6 +21,9 @@ public class Snake {
 		this.column = column;
 		this.row = row;
 		AddHead();
+		for (int i = 0; i < initialSnakeParts; i++) {
+			AddNewPart();
+		}
 	}
 
 	protected void AddHead() {
@@ -29,7 +34,7 @@ public class Snake {
 		return this.parts.add(p);
 	}
 
-	boolean AddNewPart() {
+	protected boolean AddNewPart() {
 		return AddNewPart(new SnakePart(column, row));
 	}
 
@@ -37,12 +42,9 @@ public class Snake {
 		return AddNewPart(new SnakePart(column, row, d));
 	}
 
-	protected boolean badEating(int screenX, int screenY) {
+	protected boolean badEating() {
 		Iterator<SnakePart> i = parts.iterator();
 		SnakePart head = i.next();
-		if (head.getX() < 0 || head.getX() >= screenX || head.getY() < 0 || head.getY() >= screenY) {
-			return true;
-		}
 		while (i.hasNext()) {
 			SnakePart s = i.next();
 			if (s.getX() == head.getX() && s.getY() == head.getY())
@@ -54,9 +56,11 @@ public class Snake {
 	public void Move() {
 		Move(parts.get(0).dir);
 	}
+
 	public void setDir(Dir dir) {
 		parts.get(0).dir = dir;
 	}
+
 	public void Move(Dir dir) {
 
 		ListIterator<SnakePart> ri = parts.listIterator(parts.size());

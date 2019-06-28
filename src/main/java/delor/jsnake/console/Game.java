@@ -38,6 +38,14 @@ public class Game extends delor.jsnake.core.Game {
 	@Override
 	public void startGame() {
 		super.startGame();
+
+		// greetings
+		try {
+			printxy(terminal, 10, 5, "Hello snake!");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
 		try {
 			keystrokeTimer();
 			mainLoop();
@@ -90,7 +98,7 @@ public class Game extends delor.jsnake.core.Game {
 
 	Thread thread;
 
-	public void keystrokeTimer() throws InterruptedException {
+	public void keystrokeTimer() {
 		Runnable task = () -> {
 
 			while (true) {
@@ -99,7 +107,7 @@ public class Game extends delor.jsnake.core.Game {
 					if (key == null) {
 						Thread.sleep(100);
 					} else {
-						msg.put(new MsgKeystroke(key));
+						addMsg(new MsgKeystroke(key));
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -121,7 +129,7 @@ public class Game extends delor.jsnake.core.Game {
 	public void PaintGameField() {
 		try {
 			terminal.clearScreen();
-			getSnake().Show(terminal);
+			getSnake().Show();
 			terminal.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -138,6 +146,26 @@ public class Game extends delor.jsnake.core.Game {
 	public void closeGame() {
 		super.closeGame();
 		thread.interrupt();
+	}
+	protected void showBadEating() {
+		try {
+			printxy(terminal, 0, 0, "Oops!");
+			terminal.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void printxy(Terminal terminal, int x, int y, String s) throws IOException {
+		terminal.setCursorPosition(x, y);
+		for (char c : s.toCharArray()) {
+			terminal.putCharacter(c);
+		}
 	}
 
 }

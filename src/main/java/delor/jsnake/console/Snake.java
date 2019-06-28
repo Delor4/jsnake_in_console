@@ -1,6 +1,7 @@
 package delor.jsnake.console;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Random;
 
 import com.googlecode.lanterna.TerminalSize;
@@ -9,8 +10,11 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 public class Snake extends delor.jsnake.core.Snake {
 
-	Snake(int column, int row) {
-		super(column, row);
+	Terminal terminal;
+
+	public Snake(Terminal terminal) throws IOException {
+		super(terminal.getTerminalSize().getColumns() / 2, terminal.getTerminalSize().getRows() / 2);
+		this.terminal = terminal;
 	}
 
 	private static final Random random = new Random();
@@ -27,6 +31,10 @@ public class Snake extends delor.jsnake.core.Snake {
 		AddNewPart('O');
 	}
 
+	protected boolean AddNewPart() {
+		return AddNewPart(randomColor());
+	}
+
 	boolean AddNewPart(char c) {
 		return AddNewPart(new SnakePart(column, row, c));
 	}
@@ -35,12 +43,24 @@ public class Snake extends delor.jsnake.core.Snake {
 		return AddNewPart(new SnakePart(column, row, color));
 	}
 
-	boolean badEating(Terminal terminal) throws IOException {
-		TerminalSize screenSize = terminal.getTerminalSize();
-		return badEating(screenSize.getColumns(), screenSize.getRows());
+	protected boolean badEating() {
+		if (super.badEating()) {
+			return true;
+		}
+		Iterator<delor.jsnake.core.SnakePart> i = parts.iterator();
+		delor.jsnake.core.SnakePart head = i.next();
+		try {
+			if (head.getX() < 0 || head.getX() >= terminal.getTerminalSize().getColumns() || head.getY() < 0
+					|| head.getY() >= terminal.getTerminalSize().getRows()) {
+				return true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
-	public void Show(Terminal terminal) throws IOException {
+	public void Show() throws IOException {
 
 		TerminalSize screenSize = terminal.getTerminalSize();
 		int screenX = screenSize.getColumns();
