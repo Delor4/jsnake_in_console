@@ -45,6 +45,19 @@ public abstract class Game {
 		}
 	}
 
+	int points = 0;
+
+	protected int getPoints() {
+		return points;
+	}
+
+	protected void setPoints(int p) {
+		points = p;
+	}
+	protected void addPoint(){
+		points++;
+	}
+
 	protected class MsgEatingApple implements Msg {
 		public MsgEatingApple(Apple apple) {
 			this.apple = apple;
@@ -98,6 +111,7 @@ public abstract class Game {
 		snakeAccessSemaphore.release();
 		apple = null;
 		makeNewApple();
+		addPoint();
 		addMsg(new MsgRefresh());
 	}
 

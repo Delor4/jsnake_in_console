@@ -142,6 +142,15 @@ public class Game extends delor.jsnake.core.Game {
 		}
 	}
 
+	private void showPoints() {
+		try {
+			terminal.setForegroundColor(TextColor.ANSI.DEFAULT);
+			printxy(terminal, 20, 0, "Points: " + getPoints());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void PaintGameField() {
 		try {
@@ -154,6 +163,7 @@ public class Game extends delor.jsnake.core.Game {
 				e.printStackTrace();
 			}
 			showApple();
+			showPoints();
 			terminal.setCursorPosition(terminal.getTerminalSize().getColumns() - 1,
 					terminal.getTerminalSize().getRows() - 1);
 			terminal.setForegroundColor(TextColor.ANSI.DEFAULT);
