@@ -77,8 +77,6 @@ public class Snake extends delor.jsnake.core.Snake {
 					e.printStackTrace();
 				}
 			}
-		});
-		terminal.setCursorPosition(screenX - 1, screenY - 1);
-		terminal.setForegroundColor(TextColor.ANSI.DEFAULT);
+		});		
 	}
 }

@@ -42,6 +42,15 @@ public class Snake {
 		return AddNewPart(new SnakePart(column, row, d));
 	}
 
+	protected boolean contains(int x, int y) {
+		Iterator<SnakePart> i = parts.iterator();
+		while (i.hasNext()) {
+			SnakePart s = i.next();
+			if (s.getX() == x && s.getY() == y)
+				return true;
+		}
+		return false;
+	}
 	protected boolean badEating() {
 		Iterator<SnakePart> i = parts.iterator();
 		SnakePart head = i.next();

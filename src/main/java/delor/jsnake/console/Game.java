@@ -1,10 +1,10 @@
 package delor.jsnake.console;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.Terminal;
 
@@ -33,8 +33,8 @@ public class Game extends delor.jsnake.core.Game {
 		}
 	}
 
-	public Game(Snake s, Terminal terminal) {
-		super(s);
+	public Game(Snake s, Terminal terminal) throws IOException {
+		super(s, terminal.getTerminalSize().getColumns(), terminal.getTerminalSize().getRows());
 		this.terminal = terminal;
 	}
 
@@ -56,6 +56,10 @@ public class Game extends delor.jsnake.core.Game {
 			e.printStackTrace();
 		}
 		closeGame();
+	}
+
+	protected Apple createApple(int x, int y) {
+		return new Apple(x, y);
 	}
 
 	private void mainLoop() throws InterruptedException {
@@ -112,8 +116,6 @@ public class Game extends delor.jsnake.core.Game {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				System.out.println("Task performed on: " + new Date() + "n" + "Thread's name: "
-						+ Thread.currentThread().getName());
 			}
 		};
 		keyTimer = new Timer("KeystrokeTimer");
@@ -127,11 +129,27 @@ public class Game extends delor.jsnake.core.Game {
 		return (delor.jsnake.console.Snake) snake;
 	}
 
+	private void showApple() {
+		if (apple != null) {
+			try {
+				terminal.setCursorPosition(apple.x, apple.y);
+				terminal.setForegroundColor(apple.fgColor);
+				terminal.putCharacter(apple.apperance);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	@Override
 	public void PaintGameField() {
 		try {
 			terminal.clearScreen();
 			getSnake().Show();
+			showApple();
+			terminal.setCursorPosition(terminal.getTerminalSize().getColumns() - 1,
+					terminal.getTerminalSize().getRows() - 1);
+			terminal.setForegroundColor(TextColor.ANSI.DEFAULT);
 			terminal.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
