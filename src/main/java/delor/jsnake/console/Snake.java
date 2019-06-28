@@ -63,8 +63,8 @@ public class Snake extends delor.jsnake.core.Snake {
 	public void Show() throws IOException {
 
 		TerminalSize screenSize = terminal.getTerminalSize();
-		int screenX = screenSize.getColumns();
-		int screenY = screenSize.getRows();
+		final int screenX = screenSize.getColumns();
+		final int screenY = screenSize.getRows();
 
 		parts.forEach(p -> {
 			SnakePart s = (SnakePart) p;

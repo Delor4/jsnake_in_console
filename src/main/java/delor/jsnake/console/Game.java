@@ -1,6 +1,9 @@
 package delor.jsnake.console;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.Terminal;
@@ -96,29 +99,28 @@ public class Game extends delor.jsnake.core.Game {
 		return true;
 	}
 
-	Thread thread;
+	Timer keyTimer;
 
 	public void keystrokeTimer() {
-		Runnable task = () -> {
-
-			while (true) {
+		TimerTask task = new TimerTask() {
+			public void run() {
 				try {
 					KeyStroke key = terminal.pollInput();
-					if (key == null) {
-						Thread.sleep(100);
-					} else {
+					if (key != null) {
 						addMsg(new MsgKeystroke(key));
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
-				} catch (InterruptedException e) {
-					break;
 				}
+				System.out.println("Task performed on: " + new Date() + "n" + "Thread's name: "
+						+ Thread.currentThread().getName());
 			}
-
 		};
-		thread = new Thread(task);
-		thread.start();
+		keyTimer = new Timer("KeystrokeTimer");
+
+		long delay = 100L;
+
+		keyTimer.schedule(task, delay, delay);
 	}
 
 	delor.jsnake.console.Snake getSnake() {
@@ -145,8 +147,9 @@ public class Game extends delor.jsnake.core.Game {
 	@Override
 	public void closeGame() {
 		super.closeGame();
-		thread.interrupt();
+		keyTimer.cancel();
 	}
+
 	protected void showBadEating() {
 		try {
 			printxy(terminal, 0, 0, "Oops!");
@@ -160,7 +163,7 @@ public class Game extends delor.jsnake.core.Game {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void printxy(Terminal terminal, int x, int y, String s) throws IOException {
 		terminal.setCursorPosition(x, y);
 		for (char c : s.toCharArray()) {
