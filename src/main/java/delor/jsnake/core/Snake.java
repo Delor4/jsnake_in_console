@@ -51,6 +51,7 @@ public class Snake {
 		}
 		return false;
 	}
+
 	protected boolean badEating() {
 		Iterator<SnakePart> i = parts.iterator();
 		SnakePart head = i.next();
@@ -96,6 +97,13 @@ public class Snake {
 
 		}
 		s.changeDir(dir, column, row);
+	}
+
+	public boolean appleEating(int ax, int ay) {
+		if (parts.get(0).getX() == ax && parts.get(0).getY() == ay) {
+			return true;
+		}
+		return false;
 	}
 
 }

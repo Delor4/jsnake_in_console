@@ -46,13 +46,27 @@ public abstract class Game {
 			return null;
 		}
 	}
+	protected class MsgEatingApple implements Msg {
+		@Override
+		public int getID() {
+			return 3;
+		}
+
+		@Override
+		public Object getData() {
+			return null;
+		}
+	}
 
 	protected Boolean DispatchMsg(Msg m) throws InterruptedException {
 		switch (m.getID()) {
-		case 1:
+		case 1://redraw
 			ReDrawGameField();
 			break;
-		case 10:
+		case 3://eating apple
+			eatApple();
+			break;
+		case 10://Oops
 			showBadEating();
 			return false;
 		}
@@ -73,6 +87,14 @@ public abstract class Game {
 
 	private static final Random random = new Random();
 
+	protected void eatApple() throws InterruptedException {
+		snakeAccessSemaphore.acquire();
+		snake.AddNewPart();
+		snakeAccessSemaphore.release();
+		apple = null;
+		makeNewApple();
+		addMsg(new MsgRefresh());
+	}
 	protected void makeNewApple() throws InterruptedException {
 		snakeAccessSemaphore.acquire();
 		int x = snake.column;
@@ -121,6 +143,8 @@ public abstract class Game {
 					addMsg(new MsgRefresh());
 					if (snake.badEating()) {
 						addMsg(new MsgEatingBad());
+					} else if (snake.appleEating(apple.x, apple.y)) {
+						addMsg(new MsgEatingApple());
 					}
 					tick++;
 					snakeAccessSemaphore.release();
@@ -131,7 +155,7 @@ public abstract class Game {
 		};
 		snakeTimer = new Timer("SnakeTimer");
 
-		long delay = 1000L;
+		long delay = 500L;
 
 		snakeTimer.schedule(task, delay, delay);
 
