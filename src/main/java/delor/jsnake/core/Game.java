@@ -42,7 +42,7 @@ public abstract class Game {
 		}
 	}
 
-	protected Boolean DispatchMsg(Msg m) {
+	protected Boolean DispatchMsg(Msg m) throws InterruptedException {
 		switch (m.getID()) {
 		case 1:
 			ReDrawGameField();
@@ -54,7 +54,7 @@ public abstract class Game {
 		return true;
 	}
 
-	protected void showBadEating() {
+	protected void showBadEating() throws InterruptedException {
 	}
 
 	public Game(Snake s) {

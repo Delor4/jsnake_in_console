@@ -66,7 +66,7 @@ public class Game extends delor.jsnake.core.Game {
 		}
 	}
 
-	protected Boolean DispatchMsg(Msg m) {
+	protected Boolean DispatchMsg(Msg m) throws InterruptedException {
 		if (!super.DispatchMsg(m))
 			return false;
 
@@ -150,18 +150,14 @@ public class Game extends delor.jsnake.core.Game {
 		keyTimer.cancel();
 	}
 
-	protected void showBadEating() {
+	protected void showBadEating() throws InterruptedException {
 		try {
 			printxy(terminal, 0, 0, "Oops!");
 			terminal.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		Thread.sleep(2000);
 	}
 
 	public static void printxy(Terminal terminal, int x, int y, String s) throws IOException {
