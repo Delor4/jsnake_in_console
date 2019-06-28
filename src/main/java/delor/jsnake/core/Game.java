@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 
 import delor.jsnake.console.Apple;
 
@@ -14,6 +15,7 @@ public abstract class Game {
 	protected int tick = 0;
 
 	protected BlockingQueue<Msg> msg = new LinkedBlockingQueue<>();
+	protected Semaphore snakeAccessSemaphore = new Semaphore(1);
 
 	public interface Msg {
 		int getID();
@@ -71,8 +73,8 @@ public abstract class Game {
 
 	private static final Random random = new Random();
 
-	protected void makeNewApple() {
-		//I need to protect snake.contains from access by concurrent threads
+	protected void makeNewApple() throws InterruptedException {
+		snakeAccessSemaphore.acquire();
 		int x = snake.column;
 		int y = snake.row;
 		while (snake.contains(x, y)) {
@@ -80,6 +82,7 @@ public abstract class Game {
 			y = random.nextInt(height);
 		}
 		apple = createApple(x, y);
+		snakeAccessSemaphore.release();
 	}
 
 	protected Apple createApple(int x, int y) {
@@ -90,7 +93,7 @@ public abstract class Game {
 
 	public abstract void ReDrawGameField();
 
-	public void startGame() {
+	public void startGame() throws InterruptedException {
 		StartSnakeTimer();
 		makeNewApple();
 	}
@@ -112,15 +115,18 @@ public abstract class Game {
 	public void StartSnakeTimer() {
 		TimerTask task = new TimerTask() {
 			public void run() {
-				snake.Move();
-				addMsg(new MsgRefresh());
-				if (snake.badEating()) {
-					addMsg(new MsgEatingBad());
+				try {
+					snakeAccessSemaphore.acquire();
+					snake.Move();
+					addMsg(new MsgRefresh());
+					if (snake.badEating()) {
+						addMsg(new MsgEatingBad());
+					}
+					tick++;
+					snakeAccessSemaphore.release();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-				tick++;
-				// System.out.println("Task performed on: " + new Date() + "n" + "Thread's name:
-				// "
-				// + Thread.currentThread().getName());
 			}
 		};
 		snakeTimer = new Timer("SnakeTimer");

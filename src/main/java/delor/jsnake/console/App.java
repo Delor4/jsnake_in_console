@@ -59,9 +59,11 @@ public class App {
 		
 		Game game = new Game(snake, terminal);
 		
-		game.startGame();
-
-		//mainLoop(terminal, snake);
+		try {
+			game.startGame();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		// cleaning
 		terminal.close();

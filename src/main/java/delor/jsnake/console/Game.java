@@ -39,12 +39,13 @@ public class Game extends delor.jsnake.core.Game {
 	}
 
 	@Override
-	public void startGame() {
+	public void startGame() throws InterruptedException {
 		super.startGame();
 
 		// greetings
 		try {
 			printxy(terminal, 10, 5, "Hello snake!");
+			terminal.flush();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -144,8 +145,14 @@ public class Game extends delor.jsnake.core.Game {
 	@Override
 	public void PaintGameField() {
 		try {
-			terminal.clearScreen();
-			getSnake().Show();
+			try {
+				snakeAccessSemaphore.acquire();
+				terminal.clearScreen();
+				getSnake().Show();
+				snakeAccessSemaphore.release();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			showApple();
 			terminal.setCursorPosition(terminal.getTerminalSize().getColumns() - 1,
 					terminal.getTerminalSize().getRows() - 1);
