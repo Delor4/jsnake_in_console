@@ -16,17 +16,10 @@ public abstract class Game {
 	protected Semaphore snakeAccessSemaphore = new Semaphore(1);
 
 	public interface Msg {
-		int getID();
-
 		Object getData();
 	}
 
 	protected class MsgRefresh implements Msg {
-		@Override
-		public int getID() {
-			return 1;
-		}
-
 		@Override
 		public Object getData() {
 			return null;
@@ -34,11 +27,6 @@ public abstract class Game {
 	}
 
 	protected class MsgEatingBad implements Msg {
-		@Override
-		public int getID() {
-			return 10;
-		}
-
 		@Override
 		public Object getData() {
 			return null;
@@ -66,25 +54,20 @@ public abstract class Game {
 		Apple apple;
 
 		@Override
-		public int getID() {
-			return 3;
-		}
-
-		@Override
 		public Apple getData() {
 			return apple;
 		}
 	}
 
 	protected Boolean DispatchMsg(Msg m) throws InterruptedException {
-		switch (m.getID()) {
-		case 1:// redraw
+		switch (m.getClass().getSimpleName()) {
+		case "MsgRefresh":
 			ReDrawGameField();
 			break;
-		case 3:// eating apple
+		case "MsgEatingApple":
 			eatApple((Apple) m.getData());
 			break;
-		case 10:// Oops
+		case "MsgEatingBad":// Oops
 			showBadEating();
 			return false;
 		}

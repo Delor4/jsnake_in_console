@@ -19,12 +19,6 @@ public class Game extends delor.jsnake.core.Game {
 		MsgKeystroke(KeyStroke k) {
 			data = k;
 		}
-
-		@Override
-		public int getID() {
-			return 2;
-		}
-
 		KeyStroke data;
 
 		@Override
@@ -75,7 +69,7 @@ public class Game extends delor.jsnake.core.Game {
 		if (!super.DispatchMsg(m))
 			return false;
 
-		if (m.getID() == 2) {
+		if (m.getClass().getSimpleName().equals("MsgKeystroke")) {
 			switch (((MsgKeystroke) m).getData().getKeyType()) {
 			case ArrowLeft:
 				snake.setDir(Dir.WEST);
@@ -185,6 +179,7 @@ public class Game extends delor.jsnake.core.Game {
 	}
 
 	protected void showBadEating() throws InterruptedException {
+		snakeAccessSemaphore.acquire();
 		try {
 			printxy(terminal, 0, 0, "Oops!");
 			terminal.flush();
@@ -192,6 +187,7 @@ public class Game extends delor.jsnake.core.Game {
 			e.printStackTrace();
 		}
 		Thread.sleep(2000);
+		snakeAccessSemaphore.release();
 	}
 
 	public static void printxy(Terminal terminal, int x, int y, String s) throws IOException {
